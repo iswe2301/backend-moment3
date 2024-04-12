@@ -52,6 +52,9 @@ const experienceScheme = new mongoose.Schema({
     }
 });
 
+// Inkluderar schemat till databasen, skapar tabell med model
+const experience = mongoose.model("Experience", experienceScheme);
+
 // Skapar routes
 
 // Route för GET
