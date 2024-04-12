@@ -77,6 +77,21 @@ app.get("/api/workexperience", async (req, res) => {
     }
 });
 
+// Route för POST
+app.post("/api/workexperience", async (req, res) => {
+    try {
+        // Skapar ny erfarenhet genom att läsa in datan från body
+        let result = await experience.create(req.body);
+        // Loggar lyckad tilläggning
+        console.log("Ny erfarenhet skapad!");
+        return res.json(result);
+        // Fångar upp ev. felmeddelanden
+    } catch (error) {
+        // Returnerar statuskod tillsammans med felet
+        return res.status(400).json(error);
+    }
+});
+
 // Startar applikationen/servern
 app.listen(port, () => {
     console.log("Server startad på port: " + port);
