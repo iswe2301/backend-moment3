@@ -64,8 +64,8 @@ app.get("/api/workexperience", async (req, res) => {
         let result = await experience.find({});
         // Kontrollerar om det inte finns några erfarenheter (tom)
         if (result.length === 0) {
-            // Skriver ut felmeddelande med felkod om inga resultat finns
-            res.status(404).json({ message: "Inga jobberfarenheter funna" });
+            // Returnerar felmeddelande med felkod om inga resultat finns
+            return res.status(404).json({ message: "Inga jobberfarenheter funna" });
         } else {
             // Returnerar resultatet om erfarenheter finns
             return res.json(result);
@@ -84,6 +84,7 @@ app.post("/api/workexperience", async (req, res) => {
         let result = await experience.create(req.body);
         // Loggar lyckad tilläggning
         console.log("Ny erfarenhet skapad!");
+        // Returnerar resultatet
         return res.json(result);
         // Fångar upp ev. felmeddelanden
     } catch (error) {
@@ -95,4 +96,30 @@ app.post("/api/workexperience", async (req, res) => {
 // Startar applikationen/servern
 app.listen(port, () => {
     console.log("Server startad på port: " + port);
+});
+
+// Route för PUT (update)
+app.put("/api/workexperience/:id", async (req, res) => {
+    try {
+        // Hämtar ID från url:en
+        const id = req.params.id;
+        // Hämtar erfarenheten från datan i bodyn
+        const data = req.body;
+        // Skapar en uppdatering av specifik erfarenhet baserat på id, med datan som hämtats från bodyn
+        let result = await experience.updateOne({ _id: id }, { $set: data }, { runValidators: true }); // Sätter runValidators till true för att aktivera schemavalidering vid uppdateringen
+        // Kontrollerar om det inte finns en matchande post i DB
+        if (result.matchedCount === 0) {
+            // Returnerar felmeddelande med felkod om ingen matchande post kunde hittas
+            return res.status(404).json({ message: `Ingen erfarenhet hittades med ID ${id}.` });
+        } else {
+            // Loggar lyckad uppdatering
+            console.log(`Erfarenhet med ID ${id} uppdaterad!`);
+            // Returnerar resultatet
+            return res.json(result);
+        }
+        // Fångar upp ev. fel
+    } catch (error) {
+        // Returnerar statuskod tillsammans med felet
+        return res.status(400).json(error);
+    }
 });
