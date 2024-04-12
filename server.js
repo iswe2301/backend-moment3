@@ -22,7 +22,35 @@ mongoose.connect("mongodb://localhost:27017/workexperience").then(() => {
     console.log("Ansluten till MongoDB!");
 }).catch((error) => {
     console.log("Fel vid anslutning till MongoDB: " + error);
-})
+});
+
+// Skapar schema för erfarenheter i DB
+const experienceScheme = new mongoose.Schema({
+    companyName: {
+        type: String,
+        required: true
+    },
+    jobTilte: {
+        type: String,
+        required: true
+    },
+    location: {
+        type: String,
+        required: true
+    },
+    startDate: {
+        type: Date,
+        required: true
+    },
+    endDate: {
+        type: Date,
+        required: false
+    },
+    description: {
+        type: String,
+        required: true
+    }
+});
 
 // Skapar routes
 
