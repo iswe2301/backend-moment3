@@ -28,19 +28,19 @@ mongoose.connect("mongodb://localhost:27017/workexperience").then(() => {
 const experienceScheme = new mongoose.Schema({
     companyName: {
         type: String,
-        required: true
+        required: [true, "Du måste skicka med företagsnamn"] // Sickar med anpassat felmeddelande vid false
     },
-    jobTilte: {
+    jobTitle: {
         type: String,
-        required: true
+        required: [true, "Du måste skicka med jobbtitel"]
     },
     location: {
         type: String,
-        required: true
+        required: [true, "Du måste skicka med plats"]
     },
     startDate: {
         type: Date,
-        required: true
+        required: [true, "Du måste skicka med startdatum i korrekt datumformat: YYYY-MM-DD"]
     },
     endDate: {
         type: Date,
@@ -48,7 +48,7 @@ const experienceScheme = new mongoose.Schema({
     },
     description: {
         type: String,
-        required: true
+        required: [true, "Du måste skicka med en beskrivning av erfarenheten"]
     }
 });
 
@@ -58,8 +58,23 @@ const experience = mongoose.model("Experience", experienceScheme);
 // Skapar routes
 
 // Route för GET
-app.get("/api/workexperience", (req, res) => {
-    res.json({ message: "Wälkommen till mitt API!" });
+app.get("/api/workexperience", async (req, res) => {
+    try {
+        // Hämtar alla alla jobberfarenheter från DB
+        let result = await experience.find({});
+        // Kontrollerar om det inte finns några erfarenheter (tom)
+        if (result.length === 0) {
+            // Skriver ut felmeddelande med felkod om inga resultat finns
+            res.status(404).json({ message: "Inga jobberfarenheter funna" });
+        } else {
+            // Returnerar resultatet om erfarenheter finns
+            return res.json(result);
+        }
+        // Fångar upp ev. felmeddelanden
+    } catch (error) {
+        // Returnerar statuskod tillsammans med felet
+        return res.status(500).json(error);
+    }
 });
 
 // Startar applikationen/servern
