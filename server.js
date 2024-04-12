@@ -72,6 +72,7 @@ app.get("/api/workexperience", async (req, res) => {
         }
         // Fångar upp ev. felmeddelanden
     } catch (error) {
+        console.error("Fel vid hämtning av erfarenheter: ", error);
         // Returnerar statuskod tillsammans med felet
         return res.status(500).json(error);
     }
@@ -88,8 +89,9 @@ app.post("/api/workexperience", async (req, res) => {
         return res.json(result);
         // Fångar upp ev. felmeddelanden
     } catch (error) {
+        console.error("Fel vid skapande av erfarenhet: ", error);
         // Returnerar statuskod tillsammans med felet
-        return res.status(400).json(error);
+        return res.status(500).json(error);
     }
 });
 
@@ -119,7 +121,35 @@ app.put("/api/workexperience/:id", async (req, res) => {
         }
         // Fångar upp ev. fel
     } catch (error) {
+        console.error("Fel vid uppdatering av erfarenhet: ", error);
         // Returnerar statuskod tillsammans med felet
-        return res.status(400).json(error);
+        return res.status(500).json(error);
+    }
+});
+
+// Route för DELETE
+app.delete("/api/workexperience/:id", async (req, res) => {
+    try {
+        // Hämtar ID från url:en
+        const id = req.params.id;
+
+        // Försöker radera den specifika erfarenheten baserat på id
+        let result = await experience.deleteOne({ _id: id });
+
+        // Kontrollerar om erfarenheten raderades
+        if (result.deletedCount === 0) {
+            // Returnerar felmeddelande med felkod om radering misslyckades
+            return res.status(404).json({ message: `Radering misslyckades, ingen erfarenhet hittades med ID ${id}.` });
+        } else {
+            // Loggar lyckad radering
+            console.log(`Erfarenhet med ID ${id} raderad!`);
+            // Returnerar ett meddelande om lyckad radering
+            return res.json({ message: "Erfarenhet raderad" });
+        }
+        // Fångar upp ev. fel
+    } catch (error) {
+        console.error("Fel vid radering av erfarenhet: ", error);
+        // Returnerar statuskod tillsammans med felet
+        return res.status(500).json(error);
     }
 });
