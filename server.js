@@ -5,6 +5,9 @@ require("dotenv").config();
 const express = require("express");
 const app = express(); // Startar applikationen med express
 
+// Inkluderar mongoose
+const mongoose = require("mongoose");
+
 // Inkluderar och använder cors
 const cors = require("cors");
 app.use(cors());
@@ -13,6 +16,13 @@ app.use(express.json()); // Inkluderar middleware till express för att konverte
 
 // Lagrar variabel för port, startar antingen enligt inställningar i env-filen eller på port 3000
 const port = process.env.DB_PORT || 3000;
+
+// Ansluter till MongoDB
+mongoose.connect("mongodb://localhost:27017/workexperience").then(() => {
+    console.log("Ansluten till MongoDB!");
+}).catch((error) => {
+    console.log("Fel vid anslutning till MongoDB: " + error);
+})
 
 // Skapar routes
 
