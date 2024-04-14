@@ -15,10 +15,10 @@ app.use(cors());
 app.use(express.json()); // Inkluderar middleware till express för att konvertera data till json automatiskt
 
 // Lagrar variabel för port, startar antingen enligt inställningar i env-filen eller på port 3000
-const port = process.env.DB_PORT || 3000;
+const port = process.env.PORT || 3000;
 
 // Ansluter till MongoDB
-mongoose.connect("mongodb://localhost:27017/workexperience").then(() => {
+mongoose.connect(process.env.MONGO_URI).then(() => {
     console.log("Ansluten till MongoDB!");
 }).catch((error) => {
     console.log("Fel vid anslutning till MongoDB: " + error);
@@ -95,11 +95,6 @@ app.post("/api/workexperience", async (req, res) => {
     }
 });
 
-// Startar applikationen/servern
-app.listen(port, () => {
-    console.log("Server startad på port: " + port);
-});
-
 // Route för PUT (update)
 app.put("/api/workexperience/:id", async (req, res) => {
     try {
@@ -152,4 +147,9 @@ app.delete("/api/workexperience/:id", async (req, res) => {
         // Returnerar statuskod tillsammans med felet
         return res.status(500).json(error);
     }
+});
+
+// Startar applikationen/servern
+app.listen(port, () => {
+    console.log("Server startad på port: " + port);
 });
