@@ -78,6 +78,27 @@ app.get("/api/workexperience", async (req, res) => {
     }
 });
 
+// Route för att hämta en specifik jobberfarenhet baserat på ID
+app.get("/api/workexperience/:id", async (req, res) => {
+    try {
+        const id = req.params.id;  // Hämtar ID från URL-parametern
+        let result = await experience.findById(id);  // Använder Mongoose-metoden findById för att söka i databasen
+
+        // Kontrollerar om inget resultat kunde hittas
+        if (!result) {
+            // Returnerar felmeddelande med felkod om inget resultat finns
+            return res.status(404).json({ message: "Ingen erfarenhet hittad med det angivna ID:t" });
+        }
+        // Returnerar resultatet resultatet om erfarenheten finns
+        return res.json(result);
+        //  Fångar upp ev. fel
+    } catch (error) {
+        console.error("Fel vid hämtning av erfarenhet: ", error);
+        // Returnerar statuskod tillsammans med felet
+        return res.status(500).json(error);
+    }
+});
+
 // Route för POST
 app.post("/api/workexperience", async (req, res) => {
     try {
