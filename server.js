@@ -28,7 +28,7 @@ mongoose.connect(process.env.MONGO_URI).then(() => {
 const experienceScheme = new mongoose.Schema({
     companyName: {
         type: String,
-        required: [true, "Du måste skicka med företagsnamn"] // Sickar med anpassat felmeddelande vid false
+        required: [true, "Du måste skicka med företagsnamn"] // Skickar med anpassat felmeddelande vid false
     },
     jobTitle: {
         type: String,
